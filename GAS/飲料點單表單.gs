@@ -2,7 +2,7 @@
  * ============================================================
  *  飲料點單 — Google 表單產生器（GAS / Apps Script）
  *  ------------------------------------------------------------
- *  版本：v3（新增必填手機號碼欄位）
+ *  版本：v3（新增手機欄位，兼容 V2 回應）
  *  功能：
  *    1. createDrinkOrderForm()  → 建立「飲料點單 V3」Google 表單
  *       （姓名 / 手機 / 飲料 / 甜度 / 冰量 / 其他備註，全部單頁）
@@ -46,19 +46,8 @@ var DRINK_MENU = [
 var FORM_TITLE = '飲料點單 V3';
 var FORM_DESCRIPTION = '請填寫您的姓名、手機與訂單內容，送出後我們就會收到囉！';
 
-// 試算表「表單回應」欄位編號（第 1 欄起算）
-// 1 時間戳記 | 2 姓名 | 3 手機 | 4 飲料選擇 | 5 甜度 | 6 冰量 | 7 其他備註
-// 8 類別(自動) | 9 飲料名稱(自動) | 10 單價(自動)
-var COL_TIMESTAMP = 1;
-var COL_NAME      = 2;
-var COL_PHONE     = 3;
-var COL_DRINK     = 4;
-var COL_SWEETNESS = 5;
-var COL_ICE       = 6;
-var COL_NOTE      = 7;
-var COL_CATEGORY  = 8;
-var COL_DRINKNAME = 9;
-var COL_PRICE     = 10;
+// V3 新表單欄位順序為：時間戳記 / 姓名 / 手機 / 飲料 / 甜度 / 冰量 / 備註。
+// onFormSubmit 會依照欄位標題尋找位置，因此也兼容 V2 表單與舊版訂購網頁。
 
 /**
  * 【主要執行函數】建立 Google 訂購表單（單頁）
@@ -182,8 +171,17 @@ function onFormSubmit(e) {
     var sheet = range.getSheet();
     var row = range.getRow();
 
+    // 依照標題尋找飲料欄，兼容 V2 與 V3 不同的欄位位置。
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var drinkColumn = findColumnByHeader_(headers, '選擇飲料') ||
+                      findColumnByHeader_(headers, '飲料選擇');
+    if (!drinkColumn) {
+      Logger.log('找不到飲料欄位，工作表：' + sheet.getName());
+      return;
+    }
+
     // 讀取飲料原始字串，例如「原萃醇茶｜鮮萃綠茶｜30 元」。
-    var drinkStr = String(sheet.getRange(row, COL_DRINK).getValue());
+    var drinkStr = String(sheet.getRange(row, drinkColumn).getValue());
     var parts = drinkStr.split('｜');
     if (parts.length !== 3) {
       Logger.log('第 ' + row + ' 列飲料格式無法拆解：' + drinkStr);
@@ -194,16 +192,46 @@ function onFormSubmit(e) {
     var drinkName = parts[1].trim();
     var price = parseInt(parts[2].replace('元', '').trim(), 10) || '';
 
-    // 第一次收到回應時，補上自動欄位標題。
-    sheet.getRange(1, COL_CATEGORY, 1, 3).setValues([
-      ['類別（自動）', '飲料名稱（自動）', '單價（自動）']
-    ]);
+    // 找到或建立自動欄位，V2 與 V3 都使用同一組標題。
+    var autoColumns = ensureAutoColumns_(sheet, headers);
 
-    // 寫入試算表第 8、9、10 欄。
-    sheet.getRange(row, COL_CATEGORY).setValue(category);
-    sheet.getRange(row, COL_DRINKNAME).setValue(drinkName);
-    sheet.getRange(row, COL_PRICE).setValue(price);
+    // 寫入類別、飲料名稱、單價。
+    sheet.getRange(row, autoColumns.category, 1, 3).setValues([
+      [category, drinkName, price]
+    ]);
   } catch (err) {
     Logger.log('onFormSubmit 發生錯誤：' + err.message);
   }
+}
+
+/**
+ * 依照欄位標題尋找欄位編號。
+ */
+function findColumnByHeader_(headers, keyword) {
+  for (var i = 0; i < headers.length; i++) {
+    if (String(headers[i]).indexOf(keyword) !== -1) {
+      return i + 1;
+    }
+  }
+  return 0;
+}
+
+/**
+ * 找到或建立自動補上的三個欄位。
+ */
+function ensureAutoColumns_(sheet, headers) {
+  var categoryColumn = findColumnByHeader_(headers, '類別（自動）');
+  if (!categoryColumn) {
+    categoryColumn = sheet.getLastColumn() + 1;
+  }
+
+  sheet.getRange(1, categoryColumn, 1, 3).setValues([
+    ['類別（自動）', '飲料名稱（自動）', '單價（自動）']
+  ]);
+
+  return {
+    category: categoryColumn,
+    drinkName: categoryColumn + 1,
+    price: categoryColumn + 2
+  };
 }
