@@ -1,0 +1,686 @@
+<!-- 版本：v1（綠色響應式訂購網頁） -->
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#124c3a">
+  <meta name="description" content="飲料點單，選一杯今天想喝的飲料。">
+  <title>飲料點單 | 今天喝什麼？</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23124c3a'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-size='34'%3E%E8%8C%B6%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --forest: #124c3a;
+      --forest-dark: #0c392b;
+      --leaf: #2f8b5c;
+      --leaf-light: #dcefe0;
+      --cream: #fbf8ef;
+      --paper: #fffdf7;
+      --ink: #193129;
+      --muted: #687b72;
+      --line: #d9e4dc;
+      --gold: #e4b64e;
+      --shadow: 0 24px 70px rgba(18, 76, 58, 0.13);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(circle at 8% 4%, rgba(228, 182, 78, 0.16), transparent 24rem),
+        radial-gradient(circle at 92% 20%, rgba(47, 139, 92, 0.12), transparent 28rem),
+        var(--cream);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .page-shell {
+      width: min(100% - 2rem, 1120px);
+      margin: 0 auto;
+      padding: 1rem 0 2.5rem;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.5rem 0 1.25rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      color: var(--forest);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 2.65rem;
+      height: 2.65rem;
+      border-radius: 50% 50% 45% 45%;
+      color: #fffdf7;
+      background: var(--forest);
+      box-shadow: 0 7px 0 rgba(18, 76, 58, 0.12);
+      font-size: 1.15rem;
+    }
+
+    .topbar-note {
+      color: var(--muted);
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      gap: 1.5rem;
+      padding: clamp(1.5rem, 5vw, 4rem);
+      border-radius: 1.8rem;
+      color: #f8fff8;
+      background:
+        linear-gradient(135deg, rgba(7, 47, 35, 0.88), rgba(18, 76, 58, 0.98)),
+        var(--forest);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::before,
+    .hero::after {
+      position: absolute;
+      content: "";
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero::before {
+      width: 20rem;
+      height: 20rem;
+      right: -8rem;
+      top: -10rem;
+    }
+
+    .hero::after {
+      width: 14rem;
+      height: 14rem;
+      right: 2rem;
+      bottom: -9rem;
+    }
+
+    .hero-copy,
+    .hero-aside {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.9rem;
+      color: #dcefbf;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 12ch;
+      margin-bottom: 1rem;
+      font-size: clamp(2.2rem, 8vw, 4.9rem);
+      line-height: 1.06;
+      letter-spacing: -0.07em;
+    }
+
+    .hero-copy > p:not(.eyebrow) {
+      max-width: 34rem;
+      margin-bottom: 0;
+      color: rgba(248, 255, 248, 0.76);
+      line-height: 1.8;
+    }
+
+    .hero-aside {
+      align-self: end;
+      justify-self: start;
+      padding: 1rem 1.15rem;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 1rem;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-aside strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      color: #fff;
+      font-size: 1.35rem;
+    }
+
+    .hero-aside span {
+      color: rgba(248, 255, 248, 0.7);
+      font-size: 0.85rem;
+    }
+
+    .order-card {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      gap: 1.5rem;
+      margin-top: -1rem;
+      padding: clamp(1.25rem, 4vw, 2.6rem);
+      border: 1px solid rgba(18, 76, 58, 0.08);
+      border-radius: 1.5rem;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-heading h2 {
+      margin-bottom: 0.25rem;
+      color: var(--forest);
+      font-size: clamp(1.25rem, 4vw, 1.6rem);
+      letter-spacing: -0.04em;
+    }
+
+    .section-heading p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .required-note {
+      flex: 0 0 auto;
+      color: var(--leaf);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .form-layout {
+      display: grid;
+      gap: 1.15rem;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--forest-dark);
+      font-size: 0.92rem;
+      font-weight: 800;
+    }
+
+    .field label span {
+      margin-left: 0.35rem;
+      color: var(--leaf);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .control {
+      width: 100%;
+      min-height: 3.15rem;
+      padding: 0.75rem 0.9rem;
+      border: 1px solid var(--line);
+      border-radius: 0.8rem;
+      outline: none;
+      color: var(--ink);
+      background: #fff;
+      transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .control::placeholder {
+      color: #9aaba2;
+    }
+
+    .control:focus {
+      border-color: var(--leaf);
+      background: #fcfffc;
+      box-shadow: 0 0 0 4px rgba(47, 139, 92, 0.13);
+    }
+
+    select.control {
+      cursor: pointer;
+    }
+
+    textarea.control {
+      min-height: 7rem;
+      resize: vertical;
+    }
+
+    .drink-preview {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 5.4rem;
+      margin-top: 0.65rem;
+      padding: 0.9rem 1rem;
+      border-radius: 0.9rem;
+      color: var(--forest-dark);
+      background: var(--leaf-light);
+    }
+
+    .drink-preview small {
+      display: block;
+      margin-bottom: 0.2rem;
+      color: var(--leaf);
+      font-size: 0.73rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+
+    .drink-preview strong {
+      display: block;
+      font-size: 1.08rem;
+    }
+
+    .drink-price {
+      flex: 0 0 auto;
+      color: var(--forest);
+      font-size: 1.2rem;
+      font-weight: 900;
+    }
+
+    .form-footer {
+      display: grid;
+      gap: 1rem;
+      padding-top: 0.5rem;
+    }
+
+    .privacy-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.65;
+    }
+
+    .submit-button {
+      min-height: 3.35rem;
+      padding: 0.8rem 1.2rem;
+      border: 0;
+      border-radius: 0.85rem;
+      color: #fff;
+      background: var(--forest);
+      box-shadow: 0 8px 0 rgba(12, 57, 43, 0.12);
+      cursor: pointer;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    }
+
+    .submit-button:focus-visible,
+    .submit-button:hover {
+      background: var(--leaf);
+    }
+
+    .submit-button:active {
+      transform: translateY(3px);
+      box-shadow: 0 5px 0 rgba(12, 57, 43, 0.12);
+    }
+
+    .submit-button:disabled {
+      cursor: wait;
+      opacity: 0.65;
+    }
+
+    .status {
+      min-height: 1.5rem;
+      margin: 0;
+      color: var(--leaf);
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .status.error {
+      color: #a04435;
+    }
+
+    .footer {
+      padding: 1.4rem 0 0;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.78rem;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (min-width: 640px) {
+      .page-shell {
+        width: min(100% - 3.5rem, 1120px);
+        padding-top: 1.5rem;
+      }
+
+      .hero {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: end;
+      }
+
+      .hero-aside {
+        justify-self: end;
+      }
+
+      .form-layout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .field-wide,
+      .drink-preview,
+      .form-footer {
+        grid-column: 1 / -1;
+      }
+
+      .form-footer {
+        grid-template-columns: 1fr auto;
+        align-items: center;
+      }
+
+      .form-footer .status {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .page-shell {
+        padding-top: 2rem;
+      }
+
+      .hero {
+        min-height: 22rem;
+        padding: 4rem 4.5rem;
+      }
+
+      .order-card {
+        margin-top: -2.25rem;
+        padding: 2.8rem 3rem;
+      }
+
+      .form-layout {
+        column-gap: 1.5rem;
+        row-gap: 1.35rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">茶</span>
+        <span>飲料點單</span>
+      </div>
+      <span class="topbar-note">一頁完成，送出即入單</span>
+    </header>
+
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="eyebrow">Drink order / 01</p>
+        <h1 id="page-title">今天，想喝哪一杯？</h1>
+        <p>選一杯喜歡的飲料，留下姓名與客製化需求。訂單送出後會直接進入店家的訂單試算表。</p>
+      </div>
+      <div class="hero-aside">
+        <strong>25 款飲品</strong>
+        <span>茶飲・奶茶・咖啡・風味飲品</span>
+      </div>
+    </section>
+
+    <section class="order-card" aria-labelledby="order-heading">
+      <div class="section-heading">
+        <div>
+          <h2 id="order-heading">填寫訂單</h2>
+          <p>請確認飲料與客製化選項後再送出。</p>
+        </div>
+        <span class="required-note">* 必填</span>
+      </div>
+
+      <!--
+        Google Forms 欄位對照：
+        entry.645578815 = 使用者姓名
+        entry.452752520 = 飲料選擇
+        entry.1993113824 = 甜度
+        entry.632376828 = 冰量
+        entry.14864088 = 其他備註
+      -->
+      <form
+        id="orderForm"
+        action="https://docs.google.com/forms/d/e/1FAIpQLSc9tfjxKSMFwTnGtfVa5smHU7l9sxxo9oqVE6CHvFR-NIl1JQ/formResponse"
+        method="post"
+        target="googleFormTarget"
+        accept-charset="UTF-8"
+      >
+        <div class="form-layout">
+          <div class="field field-wide">
+            <label for="customerName">使用者姓名或暱稱 <span>*</span></label>
+            <input
+              class="control"
+              id="customerName"
+              name="entry.645578815"
+              type="text"
+              placeholder="例如：小明、阿哲"
+              autocomplete="name"
+              required
+            >
+          </div>
+
+          <div class="field field-wide">
+            <label for="drinkChoice">選擇飲料 <span>*</span></label>
+            <select class="control" id="drinkChoice" name="entry.452752520" required>
+              <option value="" selected disabled>請選擇飲料品項</option>
+              <optgroup label="原萃醇茶">
+                <option value="原萃醇茶｜鮮萃綠茶｜30 元">鮮萃綠茶　NT$30</option>
+                <option value="原萃醇茶｜阿薩姆紅茶｜30 元">阿薩姆紅茶　NT$30</option>
+                <option value="原萃醇茶｜台灣文青｜50 元">台灣文青　NT$50</option>
+                <option value="原萃醇茶｜蜂蜜文青｜65 元">蜂蜜文青　NT$65</option>
+                <option value="原萃醇茶｜蜂蜜紅茶｜45 元">蜂蜜紅茶　NT$45</option>
+                <option value="原萃醇茶｜蜂蜜綠茶｜45 元">蜂蜜綠茶　NT$45</option>
+                <option value="原萃醇茶｜珍珠紅茶｜35 元">珍珠紅茶　NT$35</option>
+                <option value="原萃醇茶｜珍珠綠茶｜35 元">珍珠綠茶　NT$35</option>
+              </optgroup>
+              <optgroup label="醇品奶茶">
+                <option value="醇品奶茶｜奶茶｜35 元">奶茶　NT$35</option>
+                <option value="醇品奶茶｜奶綠｜35 元">奶綠　NT$35</option>
+                <option value="醇品奶茶｜珍珠奶茶｜40 元">珍珠奶茶　NT$40</option>
+                <option value="醇品奶茶｜珍珠奶綠｜40 元">珍珠奶綠　NT$40</option>
+                <option value="醇品奶茶｜文青奶茶｜50 元">文青奶茶　NT$50</option>
+                <option value="醇品奶茶｜文青珍奶｜55 元">文青珍奶　NT$55</option>
+              </optgroup>
+              <optgroup label="鮮奶安心喝">
+                <option value="鮮奶安心喝｜紅茶鮮奶茶｜65 元">紅茶鮮奶茶　NT$65</option>
+                <option value="鮮奶安心喝｜綠茶鮮奶茶｜65 元">綠茶鮮奶茶　NT$65</option>
+                <option value="鮮奶安心喝｜文青鮮奶茶｜65 元">文青鮮奶茶　NT$65</option>
+                <option value="鮮奶安心喝｜黑糖珍珠鮮奶｜65 元">黑糖珍珠鮮奶　NT$65</option>
+              </optgroup>
+              <optgroup label="友善喝咖啡">
+                <option value="友善喝咖啡｜美式咖啡｜50 元">美式咖啡　NT$50</option>
+                <option value="友善喝咖啡｜拿鐵咖啡｜65 元">拿鐵咖啡　NT$65</option>
+                <option value="友善喝咖啡｜焦糖拿鐵｜75 元">焦糖拿鐵　NT$75</option>
+                <option value="友善喝咖啡｜香草拿鐵｜75 元">香草拿鐵　NT$75</option>
+                <option value="友善喝咖啡｜榛果拿鐵｜75 元">榛果拿鐵　NT$75</option>
+              </optgroup>
+              <optgroup label="風味飲品">
+                <option value="風味飲品｜蜂蜜檸檬汁｜65 元">蜂蜜檸檬汁　NT$65</option>
+                <option value="風味飲品｜檸檬汁｜65 元">檸檬汁　NT$65</option>
+              </optgroup>
+            </select>
+            <div class="drink-preview" aria-live="polite">
+              <div>
+                <small id="drinkCategory">尚未選擇</small>
+                <strong id="drinkName">請從上方選擇飲料</strong>
+              </div>
+              <span class="drink-price" id="drinkPrice">NT$--</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="sweetness">甜度 <span>選填</span></label>
+            <select class="control" id="sweetness" name="entry.1993113824">
+              <option value="">不指定</option>
+              <option value="全糖">全糖</option>
+              <option value="二分之一糖">二分之一糖</option>
+              <option value="三分之一糖">三分之一糖</option>
+              <option value="無糖">無糖</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="iceLevel">冰量 <span>選填</span></label>
+            <select class="control" id="iceLevel" name="entry.632376828">
+              <option value="">不指定</option>
+              <option value="正常冰">正常冰</option>
+              <option value="少冰">少冰</option>
+              <option value="微冰">微冰</option>
+              <option value="去冰">去冰</option>
+            </select>
+          </div>
+
+          <div class="field field-wide">
+            <label for="note">其他備註 <span>選填</span></label>
+            <textarea
+              class="control"
+              id="note"
+              name="entry.14864088"
+              placeholder="還有其他想交代的事項嗎？"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="form-footer">
+            <p class="privacy-note">送出後，姓名與訂單內容會寫入店家的 Google 試算表，作為點單使用。</p>
+            <button class="submit-button" id="submitButton" type="submit">送出訂單　↗</button>
+            <p class="status" id="status" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <p class="footer">Drink order form · powered by Google Forms</p>
+  </main>
+
+  <iframe
+    class="sr-only"
+    id="googleFormTarget"
+    name="googleFormTarget"
+    title="Google 表單送出結果"
+  ></iframe>
+
+  <script>
+    (function () {
+      var form = document.getElementById('orderForm');
+      var drinkChoice = document.getElementById('drinkChoice');
+      var drinkCategory = document.getElementById('drinkCategory');
+      var drinkName = document.getElementById('drinkName');
+      var drinkPrice = document.getElementById('drinkPrice');
+      var submitButton = document.getElementById('submitButton');
+      var status = document.getElementById('status');
+      var target = document.getElementById('googleFormTarget');
+      var submissionPending = false;
+
+      function updateDrinkPreview() {
+        var value = drinkChoice.value;
+        if (!value) {
+          drinkCategory.textContent = '尚未選擇';
+          drinkName.textContent = '請從上方選擇飲料';
+          drinkPrice.textContent = 'NT$--';
+          return;
+        }
+
+        var parts = value.split('｜');
+        drinkCategory.textContent = parts[0];
+        drinkName.textContent = parts[1];
+        drinkPrice.textContent = 'NT$' + parts[2].replace(' 元', '');
+      }
+
+      function showSuccess() {
+        if (!submissionPending) {
+          return;
+        }
+        submissionPending = false;
+        form.reset();
+        updateDrinkPreview();
+        submitButton.disabled = false;
+        submitButton.textContent = '再填一筆訂單　↗';
+        status.className = 'status';
+        status.textContent = '訂單已送出，謝謝！資料已傳送至訂單試算表。';
+      }
+
+      drinkChoice.addEventListener('change', updateDrinkPreview);
+
+      form.addEventListener('submit', function () {
+        submissionPending = true;
+        submitButton.disabled = true;
+        submitButton.textContent = '正在送出…';
+        status.className = 'status';
+        status.textContent = '訂單傳送中，請稍候…';
+
+        // Google Forms 會在隱藏 iframe 完成回應；這是跨網域下仍能使用原生 POST 的方式。
+        window.setTimeout(function () {
+          if (submissionPending) {
+            showSuccess();
+          }
+        }, 2500);
+      });
+
+      target.addEventListener('load', function () {
+        if (submissionPending) {
+          showSuccess();
+        }
+      });
+
+      updateDrinkPreview();
+    }());
+  </script>
+</body>
+</html>
