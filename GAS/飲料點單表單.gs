@@ -2,7 +2,7 @@
  * ============================================================
  *  飲料點單 — Google 表單產生器（GAS / Apps Script）
  *  ------------------------------------------------------------
- *  版本：v1（初版）
+ *  版本：v2（修正表單與試算表連結）
  *  功能：
  *    1. createDrinkOrderForm()  → 建立「飲料點單」Google 表單
  *       （姓名 / 飲料選擇 / 甜度 / 冰量 / 其他備註，全部單頁）
@@ -69,6 +69,8 @@ function createDrinkOrderForm() {
 
   // 2. 建立表單
   var form = FormApp.create(FORM_TITLE);
+  // 將表單回應正式連結到目前的試算表，送出後才會寫入表單回應工作表。
+  form.setDestination(FormApp.DestinationType.SPREADSHEET, ss.getId());
   form.setDescription(FORM_DESCRIPTION)
       .setAllowResponseEdits(true)
       .setCollectEmail(false)          // 不強制收集 email
@@ -123,7 +125,7 @@ function createDrinkOrderForm() {
   sheet.getRange(1, 1, 4, 1).setFontWeight('bold');
 
   // 5. 安裝「送出時自動補類別/名稱/單價」觸發器
-  installFormSubmitTrigger_(form.getId(), ss.getId());
+  installFormSubmitTrigger_(ss.getId());
 
   Logger.log('表單已建立！');
   Logger.log('表單網址（給客人）：' + form.getPublishedUrl());
@@ -134,7 +136,7 @@ function createDrinkOrderForm() {
 /**
  * 安裝 onFormSubmit 觸發器
  */
-function installFormSubmitTrigger_(formId, spreadsheetId) {
+function installFormSubmitTrigger_(spreadsheetId) {
   // 先移除舊的同名觸發器，避免重複執行時越裝越多
   ScriptApp.getProjectTriggers().forEach(function (trig) {
     if (trig.getHandlerFunction() === 'onFormSubmit') {
@@ -153,6 +155,12 @@ function installFormSubmitTrigger_(formId, spreadsheetId) {
  */
 function onFormSubmit(e) {
   try {
+    // e 只會由「試算表的表單提交觸發器」提供，不能在編輯器中直接執行。
+    if (!e || !e.range) {
+      Logger.log('onFormSubmit(e) 不需要手動執行，請開啟表單填寫並按下提交。');
+      return;
+    }
+
     var range = e.range;
     var sheet = range.getSheet();
     var row = range.getRow();
@@ -169,6 +177,11 @@ function onFormSubmit(e) {
     var category = parts[0].trim();
     var drinkName = parts[1].trim();
     var price = parseInt(parts[2].replace('元', '').trim(), 10) || '';
+
+    // 第一次收到回應時，補上自動欄位標題。
+    sheet.getRange(1, COL_CATEGORY, 1, 3).setValues([
+      ['類別（自動）', '飲料名稱（自動）', '單價（自動）']
+    ]);
 
     // 寫入試算表第 7、8、9 欄
     sheet.getRange(row, COL_CATEGORY).setValue(category);
