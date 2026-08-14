@@ -1,26 +1,28 @@
-<!-- 版本：v1（綠色響應式訂購網頁） -->
+<!-- 版本：v2（溫馨風與手機號碼欄位） -->
 <!doctype html>
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#124c3a">
-  <meta name="description" content="飲料點單，選一杯今天想喝的飲料。">
-  <title>飲料點單 | 今天喝什麼？</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23124c3a'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-size='34'%3E%E8%8C%B6%3C/text%3E%3C/svg%3E">
+  <meta name="theme-color" content="#c66f4d">
+  <meta name="description" content="溫馨飲料點單，選一杯今天想喝的飲料。">
+  <title>飲料點單 | 暖暖喝一杯</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23c66f4d'/%3E%3Cpath d='M18 25h28l-3 25H21z' fill='%23fff7ec'/%3E%3Cpath d='M46 31h4c5 0 5 10 0 10h-5' fill='none' stroke='%23fff7ec' stroke-width='4'/%3E%3C/svg%3E">
   <style>
     :root {
-      --forest: #124c3a;
-      --forest-dark: #0c392b;
-      --leaf: #2f8b5c;
-      --leaf-light: #dcefe0;
-      --cream: #fbf8ef;
-      --paper: #fffdf7;
-      --ink: #193129;
-      --muted: #687b72;
-      --line: #d9e4dc;
-      --gold: #e4b64e;
-      --shadow: 0 24px 70px rgba(18, 76, 58, 0.13);
+      --terracotta: #c66f4d;
+      --terracotta-dark: #944d3b;
+      --peach: #f3b38b;
+      --peach-light: #ffe4ca;
+      --butter: #f5d98d;
+      --sage: #879b83;
+      --sage-light: #e4eadc;
+      --cream: #fff7ec;
+      --paper: #fffdf9;
+      --cocoa: #4a3029;
+      --muted: #8f766c;
+      --line: #eadbd0;
+      --shadow: 0 22px 60px rgba(112, 67, 49, 0.14);
     }
 
     * {
@@ -29,16 +31,17 @@
 
     html {
       background: var(--cream);
-      color: var(--ink);
+      color: var(--cocoa);
       font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
     }
 
     body {
-      margin: 0;
       min-width: 320px;
+      margin: 0;
+      overflow-x: hidden;
       background:
-        radial-gradient(circle at 8% 4%, rgba(228, 182, 78, 0.16), transparent 24rem),
-        radial-gradient(circle at 92% 20%, rgba(47, 139, 92, 0.12), transparent 28rem),
+        radial-gradient(circle at 4% 7%, rgba(243, 179, 139, 0.38), transparent 19rem),
+        radial-gradient(circle at 96% 9%, rgba(245, 217, 141, 0.38), transparent 20rem),
         var(--cream);
     }
 
@@ -50,95 +53,103 @@
     }
 
     .page-shell {
-      width: min(100% - 2rem, 1120px);
+      width: min(100% - 1.25rem, 1140px);
       margin: 0 auto;
-      padding: 1rem 0 2.5rem;
+      padding: 0.75rem 0 2.5rem;
     }
 
     .topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
-      padding: 0.5rem 0 1.25rem;
+      gap: 0.8rem;
+      padding: 0.35rem 0 1rem;
     }
 
     .brand {
       display: inline-flex;
       align-items: center;
-      gap: 0.7rem;
-      color: var(--forest);
-      font-weight: 800;
+      gap: 0.65rem;
+      color: var(--terracotta-dark);
+      font-size: 0.98rem;
+      font-weight: 900;
       letter-spacing: 0.08em;
     }
 
     .brand-mark {
       display: grid;
       place-items: center;
-      width: 2.65rem;
-      height: 2.65rem;
-      border-radius: 50% 50% 45% 45%;
-      color: #fffdf7;
-      background: var(--forest);
-      box-shadow: 0 7px 0 rgba(18, 76, 58, 0.12);
-      font-size: 1.15rem;
+      width: 2.7rem;
+      height: 2.7rem;
+      border: 3px solid var(--terracotta);
+      border-radius: 50%;
+      color: var(--terracotta);
+      background: var(--paper);
+    }
+
+    .brand-mark svg {
+      width: 1.45rem;
+      height: 1.45rem;
     }
 
     .topbar-note {
-      color: var(--muted);
-      font-size: 0.8rem;
-      letter-spacing: 0.05em;
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      color: var(--terracotta-dark);
+      background: rgba(255, 255, 255, 0.64);
+      font-size: 0.73rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
     }
 
     .hero {
       position: relative;
-      overflow: hidden;
+      isolation: isolate;
       display: grid;
       gap: 1.5rem;
-      padding: clamp(1.5rem, 5vw, 4rem);
-      border-radius: 1.8rem;
-      color: #f8fff8;
-      background:
-        linear-gradient(135deg, rgba(7, 47, 35, 0.88), rgba(18, 76, 58, 0.98)),
-        var(--forest);
+      overflow: hidden;
+      padding: clamp(1.35rem, 5vw, 4.5rem);
+      border-radius: 2rem 2rem 0.75rem 2rem;
+      background: var(--peach-light);
       box-shadow: var(--shadow);
     }
 
     .hero::before,
     .hero::after {
       position: absolute;
+      z-index: -1;
       content: "";
-      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 50%;
-      pointer-events: none;
     }
 
     .hero::before {
-      width: 20rem;
-      height: 20rem;
+      width: 18rem;
+      height: 18rem;
       right: -8rem;
-      top: -10rem;
+      top: -9rem;
+      background: rgba(245, 217, 141, 0.7);
     }
 
     .hero::after {
-      width: 14rem;
-      height: 14rem;
-      right: 2rem;
-      bottom: -9rem;
+      width: 11rem;
+      height: 11rem;
+      left: -5rem;
+      bottom: -6rem;
+      background: rgba(135, 155, 131, 0.22);
     }
 
     .hero-copy,
-    .hero-aside {
+    .hero-art {
       position: relative;
       z-index: 1;
     }
 
     .eyebrow {
-      margin: 0 0 0.9rem;
-      color: #dcefbf;
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: 0.18em;
+      margin: 0 0 0.8rem;
+      color: var(--terracotta-dark);
+      font-size: 0.76rem;
+      font-weight: 900;
+      letter-spacing: 0.19em;
       text-transform: uppercase;
     }
 
@@ -149,51 +160,77 @@
     }
 
     h1 {
-      max-width: 12ch;
+      max-width: 9ch;
       margin-bottom: 1rem;
-      font-size: clamp(2.2rem, 8vw, 4.9rem);
-      line-height: 1.06;
-      letter-spacing: -0.07em;
+      color: var(--cocoa);
+      font-family: Georgia, "Noto Serif TC", "PMingLiU", serif;
+      font-size: clamp(2.5rem, 10vw, 5.6rem);
+      line-height: 1.02;
+      letter-spacing: -0.08em;
     }
 
     .hero-copy > p:not(.eyebrow) {
-      max-width: 34rem;
+      max-width: 32rem;
       margin-bottom: 0;
-      color: rgba(248, 255, 248, 0.76);
-      line-height: 1.8;
+      color: #765950;
+      line-height: 1.85;
     }
 
-    .hero-aside {
-      align-self: end;
-      justify-self: start;
-      padding: 1rem 1.15rem;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 1rem;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(8px);
+    .hero-art {
+      min-width: 0;
     }
 
-    .hero-aside strong {
-      display: block;
-      margin-bottom: 0.25rem;
-      color: #fff;
-      font-size: 1.35rem;
+    .art-board {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 12.5rem;
+      border: 1px solid rgba(148, 77, 59, 0.12);
+      border-radius: 1.5rem;
+      background: rgba(255, 253, 249, 0.54);
+      transform: rotate(2deg);
     }
 
-    .hero-aside span {
-      color: rgba(248, 255, 248, 0.7);
-      font-size: 0.85rem;
+    .art-board::before {
+      position: absolute;
+      right: 1rem;
+      top: 0.8rem;
+      width: 3.8rem;
+      height: 3.8rem;
+      border: 2px dashed rgba(198, 111, 77, 0.42);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .cup-art {
+      width: min(80%, 18rem);
+      height: auto;
+      transform: rotate(-2deg);
+    }
+
+    .art-label {
+      position: absolute;
+      right: 0.8rem;
+      bottom: 0.7rem;
+      padding: 0.35rem 0.6rem;
+      border-radius: 0.55rem;
+      color: var(--terracotta-dark);
+      background: var(--butter);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      transform: rotate(-7deg);
     }
 
     .order-card {
       position: relative;
       z-index: 2;
       display: grid;
-      gap: 1.5rem;
-      margin-top: -1rem;
-      padding: clamp(1.25rem, 4vw, 2.6rem);
-      border: 1px solid rgba(18, 76, 58, 0.08);
-      border-radius: 1.5rem;
+      gap: 1.35rem;
+      margin-top: -0.8rem;
+      padding: clamp(1.1rem, 4vw, 2.8rem);
+      border: 1px solid rgba(198, 111, 77, 0.12);
+      border-radius: 0.75rem 1.75rem 1.75rem 1.75rem;
       background: var(--paper);
       box-shadow: var(--shadow);
     }
@@ -203,33 +240,43 @@
       align-items: end;
       justify-content: space-between;
       gap: 1rem;
-      padding-bottom: 0.85rem;
+      padding-bottom: 0.9rem;
       border-bottom: 1px solid var(--line);
+    }
+
+    .section-kicker {
+      margin-bottom: 0.35rem;
+      color: var(--sage);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
     }
 
     .section-heading h2 {
       margin-bottom: 0.25rem;
-      color: var(--forest);
-      font-size: clamp(1.25rem, 4vw, 1.6rem);
-      letter-spacing: -0.04em;
+      color: var(--terracotta-dark);
+      font-family: Georgia, "Noto Serif TC", "PMingLiU", serif;
+      font-size: clamp(1.45rem, 4vw, 2rem);
+      letter-spacing: -0.05em;
     }
 
     .section-heading p {
       margin-bottom: 0;
       color: var(--muted);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
     }
 
     .required-note {
       flex: 0 0 auto;
-      color: var(--leaf);
+      color: var(--terracotta);
       font-size: 0.78rem;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .form-layout {
       display: grid;
-      gap: 1.15rem;
+      gap: 1.1rem;
     }
 
     .field {
@@ -238,39 +285,39 @@
 
     .field label {
       display: block;
-      margin-bottom: 0.5rem;
-      color: var(--forest-dark);
-      font-size: 0.92rem;
-      font-weight: 800;
+      margin-bottom: 0.48rem;
+      color: var(--cocoa);
+      font-size: 0.9rem;
+      font-weight: 900;
     }
 
     .field label span {
       margin-left: 0.35rem;
-      color: var(--leaf);
-      font-size: 0.75rem;
-      font-weight: 600;
+      color: var(--terracotta);
+      font-size: 0.73rem;
+      font-weight: 800;
     }
 
     .control {
       width: 100%;
-      min-height: 3.15rem;
-      padding: 0.75rem 0.9rem;
+      min-height: 3.1rem;
+      padding: 0.76rem 0.9rem;
       border: 1px solid var(--line);
-      border-radius: 0.8rem;
+      border-radius: 0.75rem;
       outline: none;
-      color: var(--ink);
+      color: var(--cocoa);
       background: #fff;
       transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
     }
 
     .control::placeholder {
-      color: #9aaba2;
+      color: #b79e93;
     }
 
     .control:focus {
-      border-color: var(--leaf);
-      background: #fcfffc;
-      box-shadow: 0 0 0 4px rgba(47, 139, 92, 0.13);
+      border-color: var(--terracotta);
+      background: #fffdfa;
+      box-shadow: 0 0 0 4px rgba(198, 111, 77, 0.14);
     }
 
     select.control {
@@ -278,8 +325,15 @@
     }
 
     textarea.control {
-      min-height: 7rem;
+      min-height: 6.8rem;
       resize: vertical;
+    }
+
+    .phone-help {
+      margin: 0.45rem 0 0;
+      color: var(--muted);
+      font-size: 0.74rem;
+      line-height: 1.5;
     }
 
     .drink-preview {
@@ -287,45 +341,86 @@
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      min-height: 5.4rem;
+      min-height: 5.5rem;
       margin-top: 0.65rem;
       padding: 0.9rem 1rem;
-      border-radius: 0.9rem;
-      color: var(--forest-dark);
-      background: var(--leaf-light);
+      border: 1px solid rgba(135, 155, 131, 0.25);
+      border-radius: 1rem;
+      background: var(--sage-light);
+    }
+
+    .preview-icon {
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.75rem;
+      background: var(--butter);
+    }
+
+    .preview-icon svg {
+      width: 1.45rem;
+      height: 1.45rem;
+    }
+
+    .preview-copy {
+      min-width: 0;
+      flex: 1 1 auto;
     }
 
     .drink-preview small {
       display: block;
       margin-bottom: 0.2rem;
-      color: var(--leaf);
-      font-size: 0.73rem;
-      font-weight: 800;
-      letter-spacing: 0.05em;
+      color: var(--sage);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
     }
 
     .drink-preview strong {
       display: block;
-      font-size: 1.08rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 1.04rem;
     }
 
     .drink-price {
       flex: 0 0 auto;
-      color: var(--forest);
-      font-size: 1.2rem;
+      color: var(--terracotta-dark);
+      font-size: 1.1rem;
       font-weight: 900;
+    }
+
+    .order-aside {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.8rem 0.95rem;
+      border-radius: 0.85rem;
+      color: #6e6654;
+      background: #fff5d9;
+      font-size: 0.79rem;
+      line-height: 1.55;
+    }
+
+    .order-aside svg {
+      flex: 0 0 auto;
+      width: 1.55rem;
+      height: 1.55rem;
     }
 
     .form-footer {
       display: grid;
-      gap: 1rem;
-      padding-top: 0.5rem;
+      gap: 0.85rem;
+      padding-top: 0.35rem;
     }
 
     .privacy-note {
       margin: 0;
       color: var(--muted);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       line-height: 1.65;
     }
 
@@ -333,24 +428,24 @@
       min-height: 3.35rem;
       padding: 0.8rem 1.2rem;
       border: 0;
-      border-radius: 0.85rem;
-      color: #fff;
-      background: var(--forest);
-      box-shadow: 0 8px 0 rgba(12, 57, 43, 0.12);
+      border-radius: 0.8rem 0.8rem 0.8rem 0.2rem;
+      color: #fffdf9;
+      background: var(--terracotta);
+      box-shadow: 0 7px 0 rgba(148, 77, 59, 0.15);
       cursor: pointer;
-      font-weight: 800;
-      letter-spacing: 0.04em;
+      font-weight: 900;
+      letter-spacing: 0.05em;
       transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
     }
 
     .submit-button:focus-visible,
     .submit-button:hover {
-      background: var(--leaf);
+      background: var(--terracotta-dark);
     }
 
     .submit-button:active {
       transform: translateY(3px);
-      box-shadow: 0 5px 0 rgba(12, 57, 43, 0.12);
+      box-shadow: 0 4px 0 rgba(148, 77, 59, 0.15);
     }
 
     .submit-button:disabled {
@@ -361,21 +456,18 @@
     .status {
       min-height: 1.5rem;
       margin: 0;
-      color: var(--leaf);
-      font-size: 0.9rem;
-      font-weight: 700;
+      color: var(--sage);
+      font-size: 0.87rem;
+      font-weight: 900;
       line-height: 1.5;
     }
 
-    .status.error {
-      color: #a04435;
-    }
-
     .footer {
-      padding: 1.4rem 0 0;
+      padding: 1.35rem 0 0;
       color: var(--muted);
       text-align: center;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
     }
 
     .sr-only {
@@ -391,31 +483,29 @@
 
     @media (min-width: 640px) {
       .page-shell {
-        width: min(100% - 3.5rem, 1120px);
+        width: min(100% - 3.5rem, 1140px);
         padding-top: 1.5rem;
       }
 
       .hero {
-        grid-template-columns: minmax(0, 1fr) auto;
-        align-items: end;
-      }
-
-      .hero-aside {
-        justify-self: end;
+        grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.75fr);
+        align-items: center;
       }
 
       .form-layout {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 1.35rem;
       }
 
       .field-wide,
       .drink-preview,
+      .order-aside,
       .form-footer {
         grid-column: 1 / -1;
       }
 
       .form-footer {
-        grid-template-columns: 1fr auto;
+        grid-template-columns: minmax(0, 1fr) auto;
         align-items: center;
       }
 
@@ -430,18 +520,21 @@
       }
 
       .hero {
-        min-height: 22rem;
-        padding: 4rem 4.5rem;
+        min-height: 24rem;
+        padding: 4.3rem 4.8rem;
       }
 
       .order-card {
-        margin-top: -2.25rem;
-        padding: 2.8rem 3rem;
+        margin-top: -2.3rem;
+        padding: 2.8rem 3.1rem;
       }
 
       .form-layout {
-        column-gap: 1.5rem;
-        row-gap: 1.35rem;
+        row-gap: 1.3rem;
+      }
+
+      .form-footer {
+        grid-template-columns: minmax(0, 1fr) minmax(12rem, auto);
       }
     }
 
@@ -459,55 +552,75 @@
   <main class="page-shell">
     <header class="topbar">
       <div class="brand">
-        <span class="brand-mark" aria-hidden="true">茶</span>
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M7 12h18l-2 14H9L7 12Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M25 15h2c4 0 4 7 0 7h-3M10 8c0-2 2-2 2-4M15 8c0-2 2-2 2-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
         <span>飲料點單</span>
       </div>
-      <span class="topbar-note">一頁完成，送出即入單</span>
+      <span class="topbar-note">暖暖喝一杯</span>
     </header>
 
     <section class="hero" aria-labelledby="page-title">
       <div class="hero-copy">
-        <p class="eyebrow">Drink order / 01</p>
-        <h1 id="page-title">今天，想喝哪一杯？</h1>
-        <p>選一杯喜歡的飲料，留下姓名與客製化需求。訂單送出後會直接進入店家的訂單試算表。</p>
+        <p class="eyebrow">A little sip of joy / 02</p>
+        <h1 id="page-title">今天，暖暖喝一杯。</h1>
+        <p>把名字、聯絡方式和想喝的那杯告訴我們。慢慢選，這份小小的期待會直接送進訂單試算表。</p>
       </div>
-      <div class="hero-aside">
-        <strong>25 款飲品</strong>
-        <span>茶飲・奶茶・咖啡・風味飲品</span>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="art-board">
+          <svg class="cup-art" viewBox="0 0 330 220" fill="none">
+            <path d="M68 64h151l-17 105H86L68 64Z" fill="#FFFDF9" stroke="#944D3B" stroke-width="5"/>
+            <path d="M219 83h20c25 0 25 49-2 49h-26" stroke="#944D3B" stroke-width="5" stroke-linecap="round"/>
+            <path d="M72 76h144" stroke="#C66F4D" stroke-width="10" stroke-linecap="round"/>
+            <path d="M108 53c-2-21 15-22 10-39M145 53c-2-21 15-22 10-39" stroke="#C66F4D" stroke-width="5" stroke-linecap="round"/>
+            <path d="M95 113c17 13 33 13 50 0s33-13 50 0" stroke="#F3B38B" stroke-width="6" stroke-linecap="round"/>
+            <path d="M116 128c15 11 29 11 44 0" stroke="#F3B38B" stroke-width="6" stroke-linecap="round"/>
+            <path d="M48 178c46 13 150 14 218-1" stroke="#879B83" stroke-width="5" stroke-linecap="round"/>
+            <path d="M262 37c16 2 23 14 20 27-15 0-26-9-20-27Z" fill="#879B83"/>
+            <path d="M276 64c-8-8-12-18-14-28" stroke="#5E795E" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <span class="art-label">made for your break</span>
+        </div>
       </div>
     </section>
 
     <section class="order-card" aria-labelledby="order-heading">
       <div class="section-heading">
         <div>
-          <h2 id="order-heading">填寫訂單</h2>
-          <p>請確認飲料與客製化選項後再送出。</p>
+          <p class="section-kicker">Your little order</p>
+          <h2 id="order-heading">寫下今天的飲料</h2>
+          <p>填好後按下送出，訂單就會抵達我們的試算表。</p>
         </div>
         <span class="required-note">* 必填</span>
       </div>
 
       <!--
-        Google Forms 欄位對照：
-        entry.645578815 = 使用者姓名
-        entry.452752520 = 飲料選擇
-        entry.1993113824 = 甜度
-        entry.632376828 = 冰量
-        entry.14864088 = 其他備註
+        Google Forms V3 欄位對照：
+        entry.1872432978 = 使用者姓名
+        entry.1044169972 = 手機號碼
+        entry.152466218 = 飲料選擇
+        entry.701006177 = 甜度
+        entry.1516448136 = 冰量
+        entry.1675996292 = 其他備註
       -->
       <form
         id="orderForm"
-        action="https://docs.google.com/forms/d/e/1FAIpQLSc9tfjxKSMFwTnGtfVa5smHU7l9sxxo9oqVE6CHvFR-NIl1JQ/formResponse"
+        action="https://docs.google.com/forms/d/e/1FAIpQLSfx9ppbS1lOlqoiNRnB_m8AdP9exs46PpTzOdtP6n5MZbfS1g/formResponse"
         method="post"
         target="googleFormTarget"
         accept-charset="UTF-8"
       >
         <div class="form-layout">
-          <div class="field field-wide">
+          <div class="field">
             <label for="customerName">使用者姓名或暱稱 <span>*</span></label>
             <input
               class="control"
               id="customerName"
-              name="entry.645578815"
+              name="entry.1872432978"
               type="text"
               placeholder="例如：小明、阿哲"
               autocomplete="name"
@@ -515,10 +628,29 @@
             >
           </div>
 
+          <div class="field">
+            <label for="phoneNumber">手機號碼 <span>*</span></label>
+            <input
+              class="control"
+              id="phoneNumber"
+              name="entry.1044169972"
+              type="tel"
+              inputmode="numeric"
+              pattern="09[0-9]{8}"
+              minlength="10"
+              maxlength="10"
+              placeholder="0912345678"
+              autocomplete="tel"
+              title="請輸入 09 開頭的 10 碼手機號碼"
+              required
+            >
+            <p class="phone-help">請輸入 09 開頭的 10 碼手機號碼，不加橫線。</p>
+          </div>
+
           <div class="field field-wide">
             <label for="drinkChoice">選擇飲料 <span>*</span></label>
-            <select class="control" id="drinkChoice" name="entry.452752520" required>
-              <option value="" selected disabled>請選擇飲料品項</option>
+            <select class="control" id="drinkChoice" name="entry.152466218" required>
+              <option value="" selected disabled>請選擇今天想喝的飲料</option>
               <optgroup label="原萃醇茶">
                 <option value="原萃醇茶｜鮮萃綠茶｜30 元">鮮萃綠茶　NT$30</option>
                 <option value="原萃醇茶｜阿薩姆紅茶｜30 元">阿薩姆紅茶　NT$30</option>
@@ -555,18 +687,26 @@
                 <option value="風味飲品｜檸檬汁｜65 元">檸檬汁　NT$65</option>
               </optgroup>
             </select>
+
             <div class="drink-preview" aria-live="polite">
-              <div>
+              <span class="preview-icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none">
+                  <path d="M8 11h16l-2 15H10L8 11Z" fill="#FFFDF9" stroke="#944D3B" stroke-width="2"/>
+                  <path d="M24 14h2c4 0 4 7 0 7h-3" stroke="#944D3B" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M10 14h12" stroke="#F3B38B" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <span class="preview-copy">
                 <small id="drinkCategory">尚未選擇</small>
                 <strong id="drinkName">請從上方選擇飲料</strong>
-              </div>
+              </span>
               <span class="drink-price" id="drinkPrice">NT$--</span>
             </div>
           </div>
 
           <div class="field">
             <label for="sweetness">甜度 <span>選填</span></label>
-            <select class="control" id="sweetness" name="entry.1993113824">
+            <select class="control" id="sweetness" name="entry.701006177">
               <option value="">不指定</option>
               <option value="全糖">全糖</option>
               <option value="二分之一糖">二分之一糖</option>
@@ -577,7 +717,7 @@
 
           <div class="field">
             <label for="iceLevel">冰量 <span>選填</span></label>
-            <select class="control" id="iceLevel" name="entry.632376828">
+            <select class="control" id="iceLevel" name="entry.1516448136">
               <option value="">不指定</option>
               <option value="正常冰">正常冰</option>
               <option value="少冰">少冰</option>
@@ -591,22 +731,30 @@
             <textarea
               class="control"
               id="note"
-              name="entry.14864088"
+              name="entry.1675996292"
               placeholder="還有其他想交代的事項嗎？"
               rows="3"
             ></textarea>
           </div>
 
-          <div class="form-footer">
-            <p class="privacy-note">送出後，姓名與訂單內容會寫入店家的 Google 試算表，作為點單使用。</p>
-            <button class="submit-button" id="submitButton" type="submit">送出訂單　↗</button>
+          <div class="order-aside field-wide">
+            <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <circle cx="16" cy="16" r="12" fill="#F5D98D"/>
+              <path d="M16 9v8l5 3" stroke="#944D3B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>填寫完成後，訂單會直接送進店家的 Google 試算表，我們會依照資料準備飲料。</span>
+          </div>
+
+          <div class="form-footer field-wide">
+            <p class="privacy-note">姓名與手機號碼只用於這次訂單聯絡，送出前請確認資料正確。</p>
+            <button class="submit-button" id="submitButton" type="submit">送出這份小小期待　→</button>
             <p class="status" id="status" role="status" aria-live="polite"></p>
           </div>
         </div>
       </form>
     </section>
 
-    <p class="footer">Drink order form · powered by Google Forms</p>
+    <p class="footer">Drink order form · warm wishes, one cup at a time</p>
   </main>
 
   <iframe
@@ -651,7 +799,7 @@
         form.reset();
         updateDrinkPreview();
         submitButton.disabled = false;
-        submitButton.textContent = '再填一筆訂單　↗';
+        submitButton.textContent = '再填一筆訂單　→';
         status.className = 'status';
         status.textContent = '訂單已送出，謝謝！資料已傳送至訂單試算表。';
       }
@@ -665,7 +813,7 @@
         status.className = 'status';
         status.textContent = '訂單傳送中，請稍候…';
 
-        // Google Forms 會在隱藏 iframe 完成回應；這是跨網域下仍能使用原生 POST 的方式。
+        // 隱藏 iframe 可讓原生 POST 跨網域送出，不需要讀取 Google 的回應內容。
         window.setTimeout(function () {
           if (submissionPending) {
             showSuccess();
