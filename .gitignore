@@ -1,0 +1,14 @@
+# 系統檔案
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# 暫存/編輯器
+*.tmp
+*.swp
+*~
+
+# Google Drive
+.desktop.ini
+# Google 試算表捷徑（虛擬檔案，無法 git 索引）
+*.gsheet
